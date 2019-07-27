@@ -1,0 +1,5 @@
+.editorconfig
+.eslintrc.js
+.readme.hbs
+coverage
+__tests__
