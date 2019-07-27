@@ -1,5 +1,6 @@
 .editorconfig
 .eslintrc.js
 .readme.hbs
+CHANGELOG.md
 coverage
 __tests__
