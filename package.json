@@ -1,0 +1,54 @@
+{
+  "author": "Richard Huang <rickypc@users.noreply.github.com>",
+  "dependencies": {
+    "debug": "^4.1.1",
+    "jmespath": "^0.15.0",
+    "puppeteer-extra-plugin": "^3.0.4"
+  },
+  "description": "A plugin for puppeteer-extra to provide puppeteer functionality with Angular synchronization support.",
+  "devDependencies": {
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^22.14.0",
+    "jest": "^24.8.0",
+    "jsdoc-to-markdown": "^5.0.0"
+  },
+  "homepage": "https://github.com/rickypc/puppeteer-extra-plugin-angular#readme",
+  "jest": {
+    "clearMocks": true,
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "index.js",
+      "lib/**"
+    ],
+    "errorOnDeprecated": true,
+    "logHeapUsage": true,
+    "testEnvironment": "node"
+  },
+  "keywords": [
+    "angular",
+    "puppeteer",
+    "puppeteer-extra",
+    "puppeteer-extra-plugin",
+    "chrome",
+    "functionality",
+    "headless",
+    "plugin",
+    "support",
+    "synchronization"
+  ],
+  "license": "AGPL-3.0",
+  "main": "index.js",
+  "name": "puppeteer-extra-plugin-angular",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:rickypc/puppeteer-extra-plugin-angular.git"
+  },
+  "scripts": {
+    "docs": "jsdoc2md -t .readme.hbs lib/*.js index.js > README.md",
+    "lint": "eslint lib/** __tests__/** index.js; exit 0",
+    "test": "jest"
+  },
+  "version": "1.12.0"
+}
