@@ -107,26 +107,6 @@ class Plugin extends PuppeteerExtraPlugin {
     page.waitUntilAngularReady = Wait.untilAngularReady.bind(page);
     this.logger.debug('onPageCreated');
   }
-
-  /**
-   * @private
-   */
-  async onTargetDestroyed (target) {
-    const page = await target.page();
-    if (page) {
-      page.clickIfExists = null;
-      page.formFillOut = null;
-      page.navigateUntilReady = null;
-      page.toggleCheck = null;
-      page.toggleDeselectByText = null;
-      page.toggleSelectByText = null;
-      page.toggleUncheck = null;
-      page.typeIfExists = null;
-      page.waitUntilActionReady = null;
-      page.waitUntilAngularReady = null;
-      this.logger.debug('onPageDestroyed');
-    }
-  }
 }
 
 module.exports = pluginConfig => new Plugin(pluginConfig);
