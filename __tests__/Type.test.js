@@ -57,7 +57,8 @@ describe('Type module test', () => {
       expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function), 'value');
       expect(mock.$eval).toHaveBeenNthCalledWith(2, 'selector', expect.any(Function));
       expect(mock.debug).toHaveBeenCalledTimes(1);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s on %s for %s', 'value', 'selector', 'label');
+      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s on %s for %s', 'value',
+        'selector', 'label');
       expect(angular.element).toHaveBeenCalledTimes(1);
       expect(angular.element).toHaveBeenNthCalledWith(1, mock.element);
       expect(this.context.val).toHaveBeenCalledTimes(1);
@@ -78,7 +79,8 @@ describe('Type module test', () => {
       expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function), 'value');
       expect(mock.$eval).toHaveBeenNthCalledWith(2, 'selector', expect.any(Function));
       expect(mock.debug).toHaveBeenCalledTimes(1);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s on %s for %s', '*****', 'selector', 'label');
+      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s on %s for %s',
+        '*****', 'selector', 'label');
       expect(angular.element).toHaveBeenCalledTimes(1);
       expect(angular.element).toHaveBeenNthCalledWith(1, mock.element);
       expect(this.context.val).toHaveBeenCalledTimes(1);
@@ -139,7 +141,8 @@ describe('Type module test', () => {
       expect(mock.$eval).toHaveBeenCalledTimes(1);
       expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function), 'value');
       expect(mock.debug).toHaveBeenCalledTimes(2);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, 'el.type %s for %s error: %s', 'selector', 'label', expect.any(Error));
+      expect(mock.debug).toHaveBeenNthCalledWith(1, 'el.type %s for %s error: %s',
+        'selector', 'label', expect.any(Error));
       expect(mock.debug).toHaveBeenNthCalledWith(2, '%s for %s not found', 'selector', 'label');
       expect(angular.element).not.toHaveBeenCalled();
       expect(this.context.val).not.toHaveBeenCalled();
