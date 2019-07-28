@@ -108,7 +108,8 @@ describe('Click module test', () => {
       expect(mock.waitUntilActionReady).toHaveBeenCalledTimes(1);
       expect(mock.waitUntilActionReady).toHaveBeenNthCalledWith(1, 200);
       expect(mock.debug).toHaveBeenCalledTimes(2);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s for %s error: %s', 'selector', 'label', expect.any(Error));
+      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s for %s error: %s',
+        'selector', 'label', expect.any(Error));
       expect(mock.debug).toHaveBeenNthCalledWith(2, '%s for %s not found', 'selector', 'label');
       expect(angular.element).not.toHaveBeenCalled();
       expect(this.context.trigger).not.toHaveBeenCalled();
