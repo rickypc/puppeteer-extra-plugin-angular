@@ -51,6 +51,17 @@ describe('Navigate module test', () => {
       expect(mock.debug).toHaveBeenNthCalledWith(1, 'to %s', 'url');
     });
 
+    it('should use default value and return resolved', async () => {
+      this.action = '';
+      await Navigate.untilReady.call(mock, 'url');
+      expect(mock.goto).toHaveBeenCalledTimes(1);
+      expect(mock.goto).toHaveBeenNthCalledWith(1, 'url', { timeout: 0 });
+      expect(mock.waitUntilActionReady).toHaveBeenCalledTimes(1);
+      expect(mock.waitUntilActionReady).toHaveBeenNthCalledWith(1, 25000);
+      expect(mock.debug).toHaveBeenCalledTimes(1);
+      expect(mock.debug).toHaveBeenNthCalledWith(1, 'to %s', 'url');
+    });
+
     it('should log error', async () => {
       this.action = 'error';
       await Navigate.untilReady.call(mock, 'url', 200);
