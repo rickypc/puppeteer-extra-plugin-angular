@@ -42,7 +42,8 @@ describe('Form module test', () => {
     });
 
     it('should return rejected', async () => {
-      await Form.fillOut().catch(ex => expect(ex.message).toEqual('Form config should be an array.'));
+      await Form.fillOut().catch(ex => expect(ex.message)
+        .toEqual('Form config should be an array.'));
       expect(mock.fillOutField).not.toHaveBeenCalled();
       expect(mock.getValue).not.toHaveBeenCalled();
     });
