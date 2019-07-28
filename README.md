@@ -57,18 +57,25 @@ puppeteer.use(require('puppeteer-extra-plugin-angular')());
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
+  // Calling page.waitUntilActionReady internally.
   await page.navigateUntilReady('https://angular.io');
   await page.formFillOut(configs, data);
 
+  // Calling page.waitUntilActionReady internally.
   await page.clickIfExists('a.link', 'A Link');
 
   await page.toggleUncheck('input.radio[value="1"]', 'Uncheck Radio');
   await page.toggleSelectByText('select1', 'Option 1', 'Selection');
   await page.toggleDeselectByText('select2', 'Option 2', 'Deselection');
   await page.toggleCheck('input.check', 'Checkbox');
+
+  // Wait until both document.readyState is interactive or complete
+  // and Angular is ready.
   await page.waitUntilActionReady();
 
   await page.typeIfExists('input.text', 'Something', 'Textfield');
+
+  // Wait until Angular is ready.
   await page.waitUntilAngularReady();
 
   await page.close();
