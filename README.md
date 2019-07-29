@@ -1,13 +1,16 @@
-[![Version](https://img.shields.io/npm/v/puppeteer-extra-plugin-angular.svg)](https://www.npmjs.org/package/puppeteer-extra-plugin-angular)
-[![Downloads](https://img.shields.io/npm/dt/puppeteer-extra-plugin-angular.svg)](https://www.npmjs.org/package/puppeteer-extra-plugin-angular)
-[![Dependency Status](https://img.shields.io/david/rickypc/puppeteer-extra-plugin-angular.svg)](https://david-dm.org/rickypc/puppeteer-extra-plugin-angular)
-[![Dev Dependency Status](https://img.shields.io/david/dev/rickypc/puppeteer-extra-plugin-angular.svg)](https://david-dm.org/rickypc/puppeteer-extra-plugin-angular#info=devDependencies)
-[![Code Style](https://img.shields.io/badge/code%20style-Airbnb-red.svg)](https://github.com/airbnb/javascript)
+[![Version](https://img.shields.io/npm/v/puppeteer-extra-plugin-angular.svg)](http://bit.ly/32X27uf)
+[![Downloads](https://img.shields.io/npm/dt/puppeteer-extra-plugin-angular.svg)](http://bit.ly/32X27uf)
+[![Dependency Status](https://img.shields.io/david/rickypc/puppeteer-extra-plugin-angular.svg)](http://bit.ly/2SM3Ygy)
+[![Dev Dependency Status](https://img.shields.io/david/dev/rickypc/puppeteer-extra-plugin-angular.svg)](http://bit.ly/30ZDj2P)
+[![Code Style](https://img.shields.io/badge/code%20style-Airbnb-red.svg)](http://bit.ly/2JYN1gk)
+[![Build](https://img.shields.io/travis/rickypc/puppeteer-extra-plugin-angular.svg)](http://bit.ly/2YuZRuH)
+[![Coverage](https://img.shields.io/codecov/c/github/rickypc/puppeteer-extra-plugin-angular.svg)](http://bit.ly/2Kb1F2Y)
+[![License](https://img.shields.io/npm/l/puppeteer-extra-plugin-angular.svg)](http://bit.ly/2yi7gyO)
 
 Puppeteer Extra Plugin Angular
 ==============================
 
-A plugin for [puppeteer-extra](https://github.com/berstend/puppeteer-extra) to provide [puppeteer](https://github.com/GoogleChrome/puppeteer) functionality with [Angular](https://angular.io) synchronization support.
+A plugin for [puppeteer-extra](http://bit.ly/2JYg8Aa) to provide [puppeteer](http://bit.ly/2JX4gOZ) functionality with [Angular](http://bit.ly/2Yw8Mw6) synchronization support.
 
 Installation
 -
@@ -386,7 +389,7 @@ const response = await logger.debugAndReturn(true, 'debug message %s', Error('er
 
 Development Dependencies
 -
-You will need to install [Node.js](https://nodejs.org/) as a local development dependency. The `npm` package manager comes bundled with all recent releases of `Node.js`.
+You will need to install [Node.js](http://bit.ly/2SMCGXK) as a local development dependency. The `npm` package manager comes bundled with all recent releases of `Node.js`.
 
 `npm install` will attempt to resolve any `npm` module dependencies that have been declared in the project’s `package.json` file, installing them into the `node_modules` folder.
 
@@ -416,7 +419,7 @@ If you would like to contribute code to Puppeteer Extra Plugin Angular project y
 
 When submitting code, please make every effort to follow existing conventions and style in order to keep the code as readable as possible. Please also include appropriate test cases.
 
-Before your code can be accepted into the project you must also sign the [Puppeteer Extra Plugin Angular CLA](https://bit.ly/2JVvxRL) (Individual Contributor License Agreement).
+Before your code can be accepted into the project you must also sign the [Puppeteer Extra Plugin Angular CLA](http://bit.ly/2Y8t4w9) (Individual Contributor License Agreement).
 
 That's it! Thank you for your contribution!
 
@@ -424,6 +427,6 @@ License
 -
 Copyright (c) 2018 - 2019 Richard Huang.
 
-This plugin is free software, licensed under: [GNU Affero General Public License (AGPL-3.0)](http://www.gnu.org/licenses/agpl-3.0.en.html).
+This plugin is free software, licensed under: [GNU Affero General Public License (AGPL-3.0)](http://bit.ly/2yi7gyO).
 
-Documentation and other similar content are provided under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
+Documentation and other similar content are provided under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://bit.ly/2SMCRlS).
