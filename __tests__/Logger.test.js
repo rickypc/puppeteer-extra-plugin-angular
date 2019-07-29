@@ -22,6 +22,7 @@ describe('Logger module test', () => {
   describe('constructor', () => {
     it('should return expected', () => {
       const actual = new Logger('namespace');
+      expect(actual instanceof Logger).toBeTruthy();
       expect(actual.debugNamespace).toEqual(expect.objectContaining({
         destroy: expect.any(Function),
         extend: expect.any(Function),
