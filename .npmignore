@@ -1,6 +1,7 @@
 .editorconfig
 .eslintrc.js
 .readme.hbs
+.travis.yml
 CHANGELOG.md
 coverage
 __tests__
