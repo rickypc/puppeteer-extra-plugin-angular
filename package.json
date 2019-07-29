@@ -22,6 +22,7 @@
       "index.js",
       "lib/**"
     ],
+    "coverageDirectory": "./coverage/",
     "errorOnDeprecated": true,
     "logHeapUsage": true,
     "testEnvironment": "node"
