@@ -16,8 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const Index = require('../index.js');
 const { PuppeteerExtraPlugin } = require('puppeteer-extra-plugin');
+const Index = require('../index.js');
 
 describe('Index module test', () => {
   describe('constructor', () => {
