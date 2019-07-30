@@ -19,6 +19,7 @@
 const Click = require('../lib/Click.js');
 
 const mock = {
+  $: jest.fn(() => mock.element),
   $eval: jest.fn((selector, callback) => new Promise(async (resolve, reject) => {
     if (this.action === 'error') {
       reject(Error('error'));
@@ -50,8 +51,11 @@ describe('Click module test', () => {
     it('should return truthy', async () => {
       this.action = '';
       this.context.length = 1;
+      mock.element = {};
       const actual = await Click.ifExists.call(mock, 'selector', 'label', 200);
       expect(actual).toBeTruthy();
+      expect(mock.$).toHaveBeenCalledTimes(1);
+      expect(mock.$).toHaveBeenNthCalledWith(1, 'selector');
       expect(mock.$eval).toHaveBeenCalledTimes(1);
       expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function));
       expect(mock.waitUntilActionReady).toHaveBeenCalledTimes(1);
@@ -67,8 +71,11 @@ describe('Click module test', () => {
     it('should use default value and return truthy', async () => {
       this.action = '';
       this.context.length = 1;
+      mock.element = {};
       const actual = await Click.ifExists.call(mock, 'selector');
       expect(actual).toBeTruthy();
+      expect(mock.$).toHaveBeenCalledTimes(1);
+      expect(mock.$).toHaveBeenNthCalledWith(1, 'selector');
       expect(mock.$eval).toHaveBeenCalledTimes(1);
       expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function));
       expect(mock.waitUntilActionReady).toHaveBeenCalledTimes(1);
@@ -84,25 +91,27 @@ describe('Click module test', () => {
     it('should return falsy', async () => {
       this.action = '';
       this.context.length = 0;
+      mock.element = null;
       const actual = await Click.ifExists.call(mock, 'selector', 'label', 200);
       expect(actual).toBeFalsy();
-      expect(mock.$eval).toHaveBeenCalledTimes(1);
-      expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function));
-      expect(mock.waitUntilActionReady).toHaveBeenCalledTimes(1);
-      expect(mock.waitUntilActionReady).toHaveBeenNthCalledWith(1, 200);
+      expect(mock.$).toHaveBeenCalledTimes(1);
+      expect(mock.$).toHaveBeenNthCalledWith(1, 'selector');
+      expect(mock.$eval).not.toHaveBeenCalled();
+      expect(mock.waitUntilActionReady).not.toHaveBeenCalled();
       expect(mock.debug).toHaveBeenCalledTimes(1);
       expect(mock.debug).toHaveBeenNthCalledWith(1, '%s for %s not found', 'selector', 'label');
-      expect(angular.element).toHaveBeenCalledTimes(1);
-      expect(angular.element).toHaveBeenNthCalledWith(1, mock.element);
-      expect(this.context.trigger).toHaveBeenCalledTimes(1);
-      expect(this.context.trigger).toHaveBeenNthCalledWith(1, 'click');
+      expect(angular.element).not.toHaveBeenCalled();
+      expect(this.context.trigger).not.toHaveBeenCalled();
     });
 
     it('should log error', async () => {
       this.action = 'error';
       this.context.length = 1;
+      mock.element = {};
       const actual = await Click.ifExists.call(mock, 'selector', 'label', 200);
       expect(actual).toBeFalsy();
+      expect(mock.$).toHaveBeenCalledTimes(1);
+      expect(mock.$).toHaveBeenNthCalledWith(1, 'selector');
       expect(mock.$eval).toHaveBeenCalledTimes(1);
       expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function));
       expect(mock.waitUntilActionReady).toHaveBeenCalledTimes(1);
