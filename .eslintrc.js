@@ -36,7 +36,7 @@ module.exports = {
   ],
   rules: {
     'no-param-reassign': ['error', { ignorePropertyModificationsFor: ['el', 'page'], props: true }],
-    'no-underscore-dangle': [2, { allow: ['__test__'] }],
+    'no-underscore-dangle': [2, { allow: ['__test__', '_targetId'] }],
     'space-before-function-paren': ['error', 'always'],
   },
 }
