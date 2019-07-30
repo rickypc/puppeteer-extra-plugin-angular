@@ -16,9 +16,20 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+const PromiseTimeout = require('../lib/PromiseTimeout.js');
 const Wait = require('../lib/Wait.js');
 
 const mock = {
+  browser: jest.fn(() => ({
+    on: mock.browserOn,
+    removeListener: mock.browserRemoveListener,
+  })),
+  browserOn: jest.fn((topic, callback) => {
+    mock.data[topic] = setTimeout(callback,
+      Math.floor(Math.random() * (25 - 10 + 1) + 10), { _targetId: 'target' });
+  }),
+  browserRemoveListener: jest.fn(topic => clearTimeout(mock.data[topic])),
+  data: {},
   debug: jest.spyOn(Wait.__test__.logger, 'debug'),
   evaluate: jest.fn((callback, timeout) => new Promise(async (resolve, reject) => {
     if (this.evaluateAction === 'error') {
@@ -27,6 +38,16 @@ const mock = {
       resolve(await callback(timeout > 100 ? 100 : timeout));
     }
   })),
+  settledOrTimedout: jest.spyOn(PromiseTimeout, 'untilSettledOrTimedOut')
+    .mockImplementation((executor, timeoutExecutor, timeout) => new Promise((resolve, reject) => {
+      let pending = true;
+      setTimeout(() => {
+        pending = false;
+        timeoutExecutor(resolve, reject);
+      }, timeout > 100 ? 100 : timeout);
+      executor(resolve, reject, () => pending);
+    })),
+  target: jest.fn(() => ({ _targetId: 'target' })),
   waitFor: jest.fn((input, options = {}) => new Promise((resolve, reject) => {
     if (this.waitForAction === 'error') {
       reject(Error('error'));
@@ -43,6 +64,8 @@ describe('Wait module test', () => {
         .mockImplementation(() => {});
       this.waitUntilPageReady = jest.spyOn(Wait.__test__, 'untilPageReady')
         .mockImplementation(() => {});
+      this.waitUntilTargetReady = jest.spyOn(Wait.__test__, 'untilTargetReady')
+        .mockImplementation(() => {});
     });
 
     afterAll(() => {
@@ -50,28 +73,36 @@ describe('Wait module test', () => {
       this.waitUntilAngularReady = null;
       this.waitUntilPageReady.mockRestore();
       this.waitUntilPageReady = null;
+      this.waitUntilTargetReady.mockRestore();
+      this.waitUntilTargetReady = null;
     });
 
     it('should return resolved', async () => {
       await Wait.untilActionReady(100);
+      expect(this.waitUntilTargetReady).toHaveBeenCalledTimes(1);
+      expect(this.waitUntilTargetReady).toHaveBeenNthCalledWith(1, Wait, 20);
       expect(this.waitUntilPageReady).toHaveBeenCalledTimes(1);
       expect(this.waitUntilPageReady).toHaveBeenNthCalledWith(1, Wait, 40);
       expect(this.waitUntilAngularReady).toHaveBeenCalledTimes(1);
       expect(this.waitUntilAngularReady).toHaveBeenNthCalledWith(1, Wait, 100);
-      expect(mock.debug).toHaveBeenCalledTimes(2);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, 'page is ready');
-      expect(mock.debug).toHaveBeenNthCalledWith(2, 'angular is ready');
+      expect(mock.debug).toHaveBeenCalledTimes(3);
+      expect(mock.debug).toHaveBeenNthCalledWith(1, 'target is ready');
+      expect(mock.debug).toHaveBeenNthCalledWith(2, 'page is ready');
+      expect(mock.debug).toHaveBeenNthCalledWith(3, 'angular is ready');
     });
 
     it('should use default value and return resolved', async () => {
       await Wait.untilActionReady();
+      expect(this.waitUntilTargetReady).toHaveBeenCalledTimes(1);
+      expect(this.waitUntilTargetReady).toHaveBeenNthCalledWith(1, Wait, 5000);
       expect(this.waitUntilPageReady).toHaveBeenCalledTimes(1);
       expect(this.waitUntilPageReady).toHaveBeenNthCalledWith(1, Wait, 10000);
       expect(this.waitUntilAngularReady).toHaveBeenCalledTimes(1);
       expect(this.waitUntilAngularReady).toHaveBeenNthCalledWith(1, Wait, 25000);
-      expect(mock.debug).toHaveBeenCalledTimes(2);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, 'page is ready');
-      expect(mock.debug).toHaveBeenNthCalledWith(2, 'angular is ready');
+      expect(mock.debug).toHaveBeenCalledTimes(3);
+      expect(mock.debug).toHaveBeenNthCalledWith(1, 'target is ready');
+      expect(mock.debug).toHaveBeenNthCalledWith(2, 'page is ready');
+      expect(mock.debug).toHaveBeenNthCalledWith(3, 'angular is ready');
     });
   });
 
@@ -276,6 +307,56 @@ describe('Wait module test', () => {
       expect(mock.waitFor).toHaveBeenNthCalledWith(1, expect.any(Function), { timeout: 10000 });
       expect(mock.debug).toHaveBeenCalledTimes(1);
       expect(mock.debug).toHaveBeenNthCalledWith(1, 'untilPageReady error: %s', expect.any(Error));
+    });
+  });
+
+  describe('Helpers.untilTargetReady', () => {
+    it('should return truthy', async () => {
+      const actual = await Wait.__test__.untilTargetReady(mock, 100);
+      expect(actual).toBeTruthy();
+      expect(mock.browser).toHaveBeenCalledTimes(1);
+      expect(mock.target).toHaveBeenCalledTimes(1);
+      expect(mock.settledOrTimedout).toHaveBeenCalledTimes(1);
+      expect(mock.settledOrTimedout).toHaveBeenNthCalledWith(1,
+        expect.any(Function), expect.any(Function), 100);
+      expect(mock.browserOn).toHaveBeenCalledTimes(2);
+      expect(mock.browserOn).toHaveBeenNthCalledWith(1, 'targetcreated', expect.any(Function));
+      expect(mock.browserOn).toHaveBeenNthCalledWith(2, 'targetchanged', expect.any(Function));
+      expect(mock.browserRemoveListener).toHaveBeenCalledTimes(2);
+      expect(mock.browserRemoveListener).toHaveBeenNthCalledWith(1, 'targetcreated', expect.any(Function));
+      expect(mock.browserRemoveListener).toHaveBeenNthCalledWith(2, 'targetchanged', expect.any(Function));
+    });
+
+    it('should use default value and return truthy', async () => {
+      const actual = await Wait.__test__.untilTargetReady(mock);
+      expect(actual).toBeTruthy();
+      expect(mock.browser).toHaveBeenCalledTimes(1);
+      expect(mock.target).toHaveBeenCalledTimes(1);
+      expect(mock.settledOrTimedout).toHaveBeenCalledTimes(1);
+      expect(mock.settledOrTimedout).toHaveBeenNthCalledWith(1,
+        expect.any(Function), expect.any(Function), 25000);
+      expect(mock.browserOn).toHaveBeenCalledTimes(2);
+      expect(mock.browserOn).toHaveBeenNthCalledWith(1, 'targetcreated', expect.any(Function));
+      expect(mock.browserOn).toHaveBeenNthCalledWith(2, 'targetchanged', expect.any(Function));
+      expect(mock.browserRemoveListener).toHaveBeenCalledTimes(2);
+      expect(mock.browserRemoveListener).toHaveBeenNthCalledWith(1, 'targetcreated', expect.any(Function));
+      expect(mock.browserRemoveListener).toHaveBeenNthCalledWith(2, 'targetchanged', expect.any(Function));
+    });
+
+    it('should return falsy', async () => {
+      const actual = await Wait.__test__.untilTargetReady(mock, 5);
+      expect(actual).toBeFalsy();
+      expect(mock.browser).toHaveBeenCalledTimes(1);
+      expect(mock.target).toHaveBeenCalledTimes(1);
+      expect(mock.settledOrTimedout).toHaveBeenCalledTimes(1);
+      expect(mock.settledOrTimedout).toHaveBeenNthCalledWith(1,
+        expect.any(Function), expect.any(Function), 5);
+      expect(mock.browserOn).toHaveBeenCalledTimes(2);
+      expect(mock.browserOn).toHaveBeenNthCalledWith(1, 'targetcreated', expect.any(Function));
+      expect(mock.browserOn).toHaveBeenNthCalledWith(2, 'targetchanged', expect.any(Function));
+      expect(mock.browserRemoveListener).toHaveBeenCalledTimes(2);
+      expect(mock.browserRemoveListener).toHaveBeenNthCalledWith(1, 'targetcreated', expect.any(Function));
+      expect(mock.browserRemoveListener).toHaveBeenNthCalledWith(2, 'targetchanged', expect.any(Function));
     });
   });
 });
