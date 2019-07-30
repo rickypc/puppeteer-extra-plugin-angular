@@ -94,6 +94,12 @@ puppeteer.use(require('puppeteer-extra-plugin-angular')());
             * [.fillOut(configs, [data])](#module_puppeteer-extra-plugin-angular.Form.fillOut) ⇒ <code>Promise.&lt;void&gt;</code>
         * [.Navigate](#module_puppeteer-extra-plugin-angular.Navigate)
             * [.untilReady(url, [timeout])](#module_puppeteer-extra-plugin-angular.Navigate.untilReady) ⇒ <code>Promise.&lt;void&gt;</code>
+        * [.PromiseTimeout](#module_puppeteer-extra-plugin-angular.PromiseTimeout)
+            * _static_
+                * [.untilSettledOrTimedOut(executor, timeoutExecutor, timeout)](#module_puppeteer-extra-plugin-angular.PromiseTimeout.untilSettledOrTimedOut) ⇒ <code>Promise.&lt;\*&gt;</code>
+            * _inner_
+                * [~Executor](#module_puppeteer-extra-plugin-angular.PromiseTimeout..Executor) : <code>function</code>
+                * [~TimeoutExecutor](#module_puppeteer-extra-plugin-angular.PromiseTimeout..TimeoutExecutor) : <code>function</code>
         * [.Toggle](#module_puppeteer-extra-plugin-angular.Toggle)
             * [.check(selector, [label])](#module_puppeteer-extra-plugin-angular.Toggle.check) ⇒ <code>Promise.&lt;boolean&gt;</code>
             * [.deselectByText(selector, values, [label])](#module_puppeteer-extra-plugin-angular.Toggle.deselectByText) ⇒ <code>Promise.&lt;boolean&gt;</code>
@@ -195,6 +201,93 @@ Navigate to given url and wait for Angular to be ready.
 **Example**  
 ```js
 await page.navigateUntilReady('https://angular.io', 5000);
+```
+<a name="module_puppeteer-extra-plugin-angular.PromiseTimeout"></a>
+
+### puppeteer-extra-plugin-angular.PromiseTimeout
+**Kind**: static constant of [<code>puppeteer-extra-plugin-angular</code>](#module_puppeteer-extra-plugin-angular)  
+
+* [.PromiseTimeout](#module_puppeteer-extra-plugin-angular.PromiseTimeout)
+    * _static_
+        * [.untilSettledOrTimedOut(executor, timeoutExecutor, timeout)](#module_puppeteer-extra-plugin-angular.PromiseTimeout.untilSettledOrTimedOut) ⇒ <code>Promise.&lt;\*&gt;</code>
+    * _inner_
+        * [~Executor](#module_puppeteer-extra-plugin-angular.PromiseTimeout..Executor) : <code>function</code>
+        * [~TimeoutExecutor](#module_puppeteer-extra-plugin-angular.PromiseTimeout..TimeoutExecutor) : <code>function</code>
+
+<a name="module_puppeteer-extra-plugin-angular.PromiseTimeout.untilSettledOrTimedOut"></a>
+
+#### PromiseTimeout.untilSettledOrTimedOut(executor, timeoutExecutor, timeout) ⇒ <code>Promise.&lt;\*&gt;</code>
+Provide timeout procedure on inflight promise.
+
+**Kind**: static method of [<code>PromiseTimeout</code>](#module_puppeteer-extra-plugin-angular.PromiseTimeout)  
+**Returns**: <code>Promise.&lt;\*&gt;</code> - Resolve or reject response value.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| executor | <code>Executor</code> | Executor function. |
+| timeoutExecutor | <code>TimeoutExecutor</code> | Timeout executor function. |
+| timeout | <code>number</code> | Maximum wait timeout. |
+
+**Example**  
+```js
+const response = await PromiseTimeout.untilSettledOrTimedOut((resolve, reject, pending) => {
+  // Do something promising here...
+  if (pending()) {
+    // Do something more promising here...
+    resolve(true);
+  }
+}, (resolve, reject) => {
+  reject(Error('error'));
+}, 5000);
+```
+<a name="module_puppeteer-extra-plugin-angular.PromiseTimeout..Executor"></a>
+
+#### PromiseTimeout~Executor : <code>function</code>
+Executor function that is executed immediately by the Promise implementation.
+
+**Kind**: inner typedef of [<code>PromiseTimeout</code>](#module_puppeteer-extra-plugin-angular.PromiseTimeout)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| resolve | <code>function</code> | Resolve the promise. |
+| reject | <code>function</code> | Reject the promise. |
+| pending | <code>function</code> | True if Promise is not timed out, otherwise false. |
+
+**Example**  
+```js
+const executor = (resolve, reject, pending) => {
+  // Do something promising here...
+  if (pending()) {
+    try {
+      // Do something more promising here...
+      resolve(true);
+    } catch (ex) {
+      reject(false);
+    }
+  }
+};
+```
+<a name="module_puppeteer-extra-plugin-angular.PromiseTimeout..TimeoutExecutor"></a>
+
+#### PromiseTimeout~TimeoutExecutor : <code>function</code>
+Timeout executor function that is executed when max wait timeout is reached.
+
+**Kind**: inner typedef of [<code>PromiseTimeout</code>](#module_puppeteer-extra-plugin-angular.PromiseTimeout)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| resolve | <code>function</code> | Resolve the promise. |
+| reject | <code>function</code> | Reject the promise. |
+
+**Example**  
+```js
+const timeoutExecutor = (resolve, reject) => {
+  try {
+    resolve(true);
+  } catch (ex) {
+    reject(false);
+  }
+};
 ```
 <a name="module_puppeteer-extra-plugin-angular.Toggle"></a>
 
