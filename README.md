@@ -1,16 +1,16 @@
-[![Version](https://img.shields.io/npm/v/puppeteer-extra-plugin-angular.svg)](http://bit.ly/32X27uf)
-[![Downloads](https://img.shields.io/npm/dt/puppeteer-extra-plugin-angular.svg)](http://bit.ly/32X27uf)
-[![Dependency Status](https://img.shields.io/david/rickypc/puppeteer-extra-plugin-angular.svg)](http://bit.ly/2SM3Ygy)
-[![Dev Dependency Status](https://img.shields.io/david/dev/rickypc/puppeteer-extra-plugin-angular.svg)](http://bit.ly/30ZDj2P)
-[![Code Style](https://img.shields.io/badge/code%20style-Airbnb-red.svg)](http://bit.ly/2JYN1gk)
-[![Build](https://img.shields.io/travis/rickypc/puppeteer-extra-plugin-angular.svg)](http://bit.ly/2YuZRuH)
-[![Coverage](https://img.shields.io/codecov/c/github/rickypc/puppeteer-extra-plugin-angular.svg)](http://bit.ly/2Kb1F2Y)
-[![License](https://img.shields.io/npm/l/puppeteer-extra-plugin-angular.svg)](http://bit.ly/2yi7gyO)
+[![Version](https://img.shields.io/npm/v/puppeteer-extra-plugin-angular.svg)](https://bit.ly/32X27uf)
+[![Downloads](https://img.shields.io/npm/dt/puppeteer-extra-plugin-angular.svg)](https://bit.ly/32X27uf)
+[![Dependency Status](https://img.shields.io/david/rickypc/puppeteer-extra-plugin-angular.svg)](https://bit.ly/2SM3Ygy)
+[![Dev Dependency Status](https://img.shields.io/david/dev/rickypc/puppeteer-extra-plugin-angular.svg)](https://bit.ly/30ZDj2P)
+[![Code Style](https://img.shields.io/badge/code%20style-Airbnb-red.svg)](https://bit.ly/2JYN1gk)
+[![Build](https://img.shields.io/travis/rickypc/puppeteer-extra-plugin-angular.svg)](https://bit.ly/2YuZRuH)
+[![Coverage](https://img.shields.io/codecov/c/github/rickypc/puppeteer-extra-plugin-angular.svg)](https://bit.ly/2Kb1F2Y)
+[![License](https://img.shields.io/npm/l/puppeteer-extra-plugin-angular.svg)](https://bit.ly/2yi7gyO)
 
 Puppeteer Extra Plugin Angular
 ==============================
 
-A plugin for [puppeteer-extra](http://bit.ly/2JYg8Aa) to provide [puppeteer](http://bit.ly/2JX4gOZ) functionality with [Angular](http://bit.ly/2Yw8Mw6) synchronization support.
+A plugin for [puppeteer-extra](https://bit.ly/2JYg8Aa) to provide [puppeteer](https://bit.ly/2JX4gOZ) functionality with [Angular](https://bit.ly/2Yw8Mw6) synchronization support.
 
 Installation
 -
@@ -94,12 +94,6 @@ puppeteer.use(require('puppeteer-extra-plugin-angular')());
             * [.fillOut(configs, [data])](#module_puppeteer-extra-plugin-angular.Form.fillOut) ⇒ <code>Promise.&lt;void&gt;</code>
         * [.Navigate](#module_puppeteer-extra-plugin-angular.Navigate)
             * [.untilReady(url, [timeout])](#module_puppeteer-extra-plugin-angular.Navigate.untilReady) ⇒ <code>Promise.&lt;void&gt;</code>
-        * [.PromiseTimeout](#module_puppeteer-extra-plugin-angular.PromiseTimeout)
-            * _static_
-                * [.untilSettledOrTimedOut(executor, timeoutExecutor, timeout)](#module_puppeteer-extra-plugin-angular.PromiseTimeout.untilSettledOrTimedOut) ⇒ <code>Promise.&lt;\*&gt;</code>
-            * _inner_
-                * [~Executor](#module_puppeteer-extra-plugin-angular.PromiseTimeout..Executor) : <code>function</code>
-                * [~TimeoutExecutor](#module_puppeteer-extra-plugin-angular.PromiseTimeout..TimeoutExecutor) : <code>function</code>
         * [.Toggle](#module_puppeteer-extra-plugin-angular.Toggle)
             * [.check(selector, [label])](#module_puppeteer-extra-plugin-angular.Toggle.check) ⇒ <code>Promise.&lt;boolean&gt;</code>
             * [.deselectByText(selector, values, [label])](#module_puppeteer-extra-plugin-angular.Toggle.deselectByText) ⇒ <code>Promise.&lt;boolean&gt;</code>
@@ -201,93 +195,6 @@ Navigate to given url and wait for Angular to be ready.
 **Example**  
 ```js
 await page.navigateUntilReady('https://angular.io', 5000);
-```
-<a name="module_puppeteer-extra-plugin-angular.PromiseTimeout"></a>
-
-### puppeteer-extra-plugin-angular.PromiseTimeout
-**Kind**: static constant of [<code>puppeteer-extra-plugin-angular</code>](#module_puppeteer-extra-plugin-angular)  
-
-* [.PromiseTimeout](#module_puppeteer-extra-plugin-angular.PromiseTimeout)
-    * _static_
-        * [.untilSettledOrTimedOut(executor, timeoutExecutor, timeout)](#module_puppeteer-extra-plugin-angular.PromiseTimeout.untilSettledOrTimedOut) ⇒ <code>Promise.&lt;\*&gt;</code>
-    * _inner_
-        * [~Executor](#module_puppeteer-extra-plugin-angular.PromiseTimeout..Executor) : <code>function</code>
-        * [~TimeoutExecutor](#module_puppeteer-extra-plugin-angular.PromiseTimeout..TimeoutExecutor) : <code>function</code>
-
-<a name="module_puppeteer-extra-plugin-angular.PromiseTimeout.untilSettledOrTimedOut"></a>
-
-#### PromiseTimeout.untilSettledOrTimedOut(executor, timeoutExecutor, timeout) ⇒ <code>Promise.&lt;\*&gt;</code>
-Provide timeout procedure on inflight promise.
-
-**Kind**: static method of [<code>PromiseTimeout</code>](#module_puppeteer-extra-plugin-angular.PromiseTimeout)  
-**Returns**: <code>Promise.&lt;\*&gt;</code> - Resolve or reject response value.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| executor | <code>Executor</code> | Executor function. |
-| timeoutExecutor | <code>TimeoutExecutor</code> | Timeout executor function. |
-| timeout | <code>number</code> | Maximum wait timeout. |
-
-**Example**  
-```js
-const response = await PromiseTimeout.untilSettledOrTimedOut((resolve, reject, pending) => {
-  // Do something promising here...
-  if (pending()) {
-    // Do something more promising here...
-    resolve(true);
-  }
-}, (resolve, reject) => {
-  reject(Error('error'));
-}, 5000);
-```
-<a name="module_puppeteer-extra-plugin-angular.PromiseTimeout..Executor"></a>
-
-#### PromiseTimeout~Executor : <code>function</code>
-Executor function that is executed immediately by the Promise implementation.
-
-**Kind**: inner typedef of [<code>PromiseTimeout</code>](#module_puppeteer-extra-plugin-angular.PromiseTimeout)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| resolve | <code>function</code> | Resolve the promise. |
-| reject | <code>function</code> | Reject the promise. |
-| pending | <code>function</code> | True if Promise is not timed out, otherwise false. |
-
-**Example**  
-```js
-const executor = (resolve, reject, pending) => {
-  // Do something promising here...
-  if (pending()) {
-    try {
-      // Do something more promising here...
-      resolve(true);
-    } catch (ex) {
-      reject(false);
-    }
-  }
-};
-```
-<a name="module_puppeteer-extra-plugin-angular.PromiseTimeout..TimeoutExecutor"></a>
-
-#### PromiseTimeout~TimeoutExecutor : <code>function</code>
-Timeout executor function that is executed when max wait timeout is reached.
-
-**Kind**: inner typedef of [<code>PromiseTimeout</code>](#module_puppeteer-extra-plugin-angular.PromiseTimeout)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| resolve | <code>function</code> | Resolve the promise. |
-| reject | <code>function</code> | Reject the promise. |
-
-**Example**  
-```js
-const timeoutExecutor = (resolve, reject) => {
-  try {
-    resolve(true);
-  } catch (ex) {
-    reject(false);
-  }
-};
 ```
 <a name="module_puppeteer-extra-plugin-angular.Toggle"></a>
 
@@ -482,7 +389,7 @@ const response = await logger.debugAndReturn(true, 'debug message %s', Error('er
 
 Development Dependencies
 -
-You will need to install [Node.js](http://bit.ly/2SMCGXK) as a local development dependency. The `npm` package manager comes bundled with all recent releases of `Node.js`.
+You will need to install [Node.js](https://bit.ly/2SMCGXK) as a local development dependency. The `npm` package manager comes bundled with all recent releases of `Node.js`.
 
 `npm install` will attempt to resolve any `npm` module dependencies that have been declared in the project’s `package.json` file, installing them into the `node_modules` folder.
 
@@ -512,7 +419,7 @@ If you would like to contribute code to Puppeteer Extra Plugin Angular project y
 
 When submitting code, please make every effort to follow existing conventions and style in order to keep the code as readable as possible. Please also include appropriate test cases.
 
-Before your code can be accepted into the project you must also sign the [Puppeteer Extra Plugin Angular CLA](http://bit.ly/2Y8t4w9) (Individual Contributor License Agreement).
+Before your code can be accepted into the project you must also sign the [Puppeteer Extra Plugin Angular CLA](https://bit.ly/2Y8t4w9) (Individual Contributor License Agreement).
 
 That's it! Thank you for your contribution!
 
@@ -520,6 +427,6 @@ License
 -
 Copyright (c) 2018 - 2019 Richard Huang.
 
-This plugin is free software, licensed under: [GNU Affero General Public License (AGPL-3.0)](http://bit.ly/2yi7gyO).
+This plugin is free software, licensed under: [GNU Affero General Public License (AGPL-3.0)](https://bit.ly/2yi7gyO).
 
-Documentation and other similar content are provided under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://bit.ly/2SMCRlS).
+Documentation and other similar content are provided under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://bit.ly/2SMCRlS).
