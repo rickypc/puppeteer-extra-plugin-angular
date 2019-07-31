@@ -16,7 +16,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const PromiseTimeout = require('../lib/PromiseTimeout.js');
 const Wait = require('../lib/Wait.js');
 
 const mock = {
@@ -38,7 +37,7 @@ const mock = {
       resolve(await callback(timeout > 100 ? 100 : timeout));
     }
   })),
-  settledOrTimedout: jest.spyOn(PromiseTimeout, 'untilSettledOrTimedOut')
+  settledOrTimedout: jest.spyOn(Wait.__test__, 'untilSettledOrTimedOut')
     .mockImplementation((executor, timeoutExecutor, timeout) => new Promise((resolve, reject) => {
       let pending = true;
       setTimeout(() => {
