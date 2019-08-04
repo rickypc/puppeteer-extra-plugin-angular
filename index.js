@@ -87,15 +87,15 @@ const Wait = require('./lib/Wait.js');
  *   await browser.close();
  * })();
  */
+/* eslint class-methods-use-this: ["error", { "exceptMethods": ["name"] }] */
 class Plugin extends PuppeteerExtraPlugin {
   constructor (opts = {}) {
     super(opts);
-    this.label = 'angular';
     this.logger = new Logger('pepa:index');
   }
 
   get name () {
-    return this.label;
+    return 'angular';
   }
 
   /**
