@@ -1,6 +1,6 @@
 ### 2.1.0 (2019.08.04)
 
-* Add Runkit example file
+* Add RunKit example file
 * Plugin name bugfix
 
 ### 2.0.0 (2019.07.30)
