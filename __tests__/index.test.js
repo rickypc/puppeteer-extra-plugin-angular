@@ -24,7 +24,6 @@ describe('Index module test', () => {
     it('should return expected', () => {
       const actual = Index();
       expect(actual instanceof PuppeteerExtraPlugin).toBeTruthy();
-      expect(actual.label).toEqual('angular');
       expect(actual.logger.debugNamespace.namespace).toEqual('pepa:index');
     });
   });
