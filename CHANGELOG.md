@@ -1,3 +1,7 @@
+### 2.2.0 (2019.08.04)
+
+* Eliminate console exception on non-angular page
+
 ### 2.1.0 (2019.08.04)
 
 * Add RunKit example file
