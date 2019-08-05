@@ -145,11 +145,13 @@ describe('Wait module test', () => {
       global.document = {
         querySelector: jest.fn(() => {}),
       };
+      global.window = {};
     });
 
     afterAll(() => {
       global.angular = null;
       global.document = null;
+      global.window = null;
       this.context = null;
       this.injector = null;
     });
@@ -162,6 +164,7 @@ describe('Wait module test', () => {
         element: jest.fn(() => this.context),
         injector: jest.fn(() => this.context),
       };
+      global.window.angular = global.angular;
       const actual = await Wait.__test__.untilAngularReady(mock, 100);
       expect(actual).toBeTruthy();
       expect(mock.evaluate).toHaveBeenCalledTimes(1);
@@ -181,6 +184,7 @@ describe('Wait module test', () => {
     it('should return truthy on non-angular page', async () => {
       this.evaluateAction = '';
       global.angular = null;
+      global.window.angular = global.angular;
       const actual = await Wait.__test__.untilAngularReady(mock, 100);
       expect(actual).toBeTruthy();
       expect(mock.evaluate).toHaveBeenCalledTimes(1);
@@ -199,6 +203,7 @@ describe('Wait module test', () => {
         element: jest.fn(() => this.context),
         injector: jest.fn(() => this.injector),
       };
+      global.window.angular = global.angular;
       const actual = await Wait.__test__.untilAngularReady(mock);
       expect(actual).toBeTruthy();
       expect(mock.evaluate).toHaveBeenCalledTimes(1);
@@ -223,6 +228,7 @@ describe('Wait module test', () => {
         element: jest.fn(() => this.context),
         injector: jest.fn(() => this.context),
       };
+      global.window.angular = global.angular;
       const actual = await Wait.__test__.untilAngularReady(mock, 5);
       expect(actual).toBeFalsy();
       expect(mock.evaluate).toHaveBeenCalledTimes(1);
@@ -247,6 +253,7 @@ describe('Wait module test', () => {
         element: jest.fn(() => this.context),
         injector: jest.fn(() => this.context),
       };
+      global.window.angular = global.angular;
       const actual = await Wait.__test__.untilAngularReady(mock, 5);
       expect(actual).toBeFalsy();
       expect(mock.evaluate).toHaveBeenCalledTimes(1);
