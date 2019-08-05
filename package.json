@@ -56,5 +56,5 @@
     "lint": "eslint lib/** __tests__/** index.js; exit 0",
     "test": "jest"
   },
-  "version": "2.1.0"
+  "version": "2.2.0"
 }
