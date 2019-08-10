@@ -1,3 +1,7 @@
+### 2.2.1 (2019.08.09)
+
+* Add peer dependencies and dev dependencies
+
 ### 2.2.0 (2019.08.04)
 
 * Eliminate console exception on non-angular page
