@@ -4,14 +4,14 @@
     "debug": "^4.1.1",
     "jmespath": "^0.15.0",
     "puppeteer-extra-plugin": "^3.0.4",
-    "timeable-promise": "^1.2.0"
+    "timeable-promise": "^1.2.1"
   },
   "description": "A plugin for puppeteer-extra to provide puppeteer functionality with Angular synchronization support.",
   "devDependencies": {
     "eslint": "^6.1.0",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jest": "^22.14.0",
+    "eslint-plugin-jest": "^22.15.0",
     "jest": "^24.8.0",
     "jsdoc-to-markdown": "^5.0.0",
     "puppeteer": "^1.19.0",
@@ -62,5 +62,5 @@
     "lint": "eslint lib/** __tests__/** index.js; exit 0",
     "test": "jest"
   },
-  "version": "2.2.0"
+  "version": "2.2.1"
 }
