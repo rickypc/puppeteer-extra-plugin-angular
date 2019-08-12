@@ -22,14 +22,14 @@ const Toggle = require('../lib/Toggle.js');
 const Type = require('../lib/Type.js');
 
 const mock = {
-  click: jest.spyOn(Click, 'ifExists').mockImplementation(() => {}),
+  click: jest.spyOn(Click, 'ifExists').mockImplementation(() => Promise.resolve()),
   fillOutField: jest.spyOn(Form.__test__, 'fillOutField'),
   getValue: jest.spyOn(Form.__test__, 'getValue'),
-  toggleCheck: jest.spyOn(Toggle, 'check').mockImplementation(() => {}),
-  toggleDeselect: jest.spyOn(Toggle, 'deselectByText').mockImplementation(() => {}),
-  toggleSelect: jest.spyOn(Toggle, 'selectByText').mockImplementation(() => {}),
-  toggleUncheck: jest.spyOn(Toggle, 'uncheck').mockImplementation(() => {}),
-  type: jest.spyOn(Type, 'ifExists').mockImplementation(() => {}),
+  toggleCheck: jest.spyOn(Toggle, 'check').mockImplementation(() => Promise.resolve()),
+  toggleDeselect: jest.spyOn(Toggle, 'deselectByText').mockImplementation(() => Promise.resolve()),
+  toggleSelect: jest.spyOn(Toggle, 'selectByText').mockImplementation(() => Promise.resolve()),
+  toggleUncheck: jest.spyOn(Toggle, 'uncheck').mockImplementation(() => Promise.resolve()),
+  type: jest.spyOn(Type, 'ifExists').mockImplementation(() => Promise.resolve()),
 };
 
 describe('Form module test', () => {
