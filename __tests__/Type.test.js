@@ -22,23 +22,26 @@ const createMocks = ({
   evalAction = '',
   type = 'text',
 } = {}) => {
-  const mocks = Object.assign({
-    evalAction,
-    type,
-  }, {
-    $eval: jest.fn((selector, callback, value) => new Promise(async (resolve, reject) => {
-      if (mocks.evalAction === 'error') {
-        reject(Error('error'));
-      } else {
-        resolve(callback(mocks.element, value));
-      }
-    })),
-    debug: jest.spyOn(Type.__test__.logger, 'debug'),
-    element: {
-      dispatchEvent: jest.fn(() => {}),
+  const mocks = {
+    ...{
+      evalAction,
       type,
     },
-  });
+    ...{
+      $eval: jest.fn((selector, callback, value) => new Promise((resolve, reject) => {
+        if (mocks.evalAction === 'error') {
+          reject(Error('error'));
+        } else {
+          resolve(callback(mocks.element, value));
+        }
+      })),
+      debug: jest.spyOn(Type.__test__.logger, 'debug'),
+      element: {
+        dispatchEvent: jest.fn(() => {}),
+        type,
+      },
+    },
+  };
   return mocks;
 };
 
