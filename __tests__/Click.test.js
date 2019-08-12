@@ -22,24 +22,27 @@ const createMocks = ({
   $Action = '',
   evalAction = '',
 } = {}) => {
-  const mocks = Object.assign({
-    $Action,
-    evalAction,
-  }, {
-    $: jest.fn(() => (mocks.$Action === 'null' ? null : mocks.element)),
-    $eval: jest.fn((selector, callback) => new Promise(async (resolve, reject) => {
-      if (mocks.evalAction === 'error') {
-        reject(Error('error'));
-      } else {
-        resolve(callback(mocks.element));
-      }
-    })),
-    debug: jest.spyOn(Click.__test__.logger, 'debug'),
-    element: {
-      dispatchEvent: jest.fn(() => {}),
+  const mocks = {
+    ...{
+      $Action,
+      evalAction,
     },
-    waitUntilActionReady: jest.fn(() => new Promise(resolve => setTimeout(resolve, 100))),
-  });
+    ...{
+      $: jest.fn(() => (mocks.$Action === 'null' ? null : mocks.element)),
+      $eval: jest.fn((selector, callback) => new Promise((resolve, reject) => {
+        if (mocks.evalAction === 'error') {
+          reject(Error('error'));
+        } else {
+          resolve(callback(mocks.element));
+        }
+      })),
+      debug: jest.spyOn(Click.__test__.logger, 'debug'),
+      element: {
+        dispatchEvent: jest.fn(() => {}),
+      },
+      waitUntilActionReady: jest.fn(() => new Promise((resolve) => setTimeout(resolve, 100))),
+    },
+  };
   return mocks;
 };
 
