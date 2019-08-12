@@ -4,7 +4,7 @@
     "debug": "^4.1.1",
     "jmespath": "^0.15.0",
     "puppeteer-extra-plugin": "^3.0.4",
-    "timeable-promise": "^1.2.2"
+    "timeable-promise": "^1.2.4"
   },
   "description": "A plugin for puppeteer-extra to provide puppeteer functionality with Angular synchronization support.",
   "devDependencies": {
@@ -62,5 +62,5 @@
     "lint": "eslint lib/** __tests__/** index.js; exit 0",
     "test": "jest"
   },
-  "version": "3.0.1"
+  "version": "3.1.0"
 }
