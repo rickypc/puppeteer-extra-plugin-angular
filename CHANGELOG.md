@@ -1,3 +1,7 @@
+### 3.0.1 (2019.08.11)
+
+* Update dependencies and documentation
+
 ### 3.0.0 (2019.08.11)
 
 * Generalize the actions without Angular dependency
