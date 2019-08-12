@@ -10,7 +10,8 @@
 Puppeteer Extra Plugin Angular
 ==============================
 
-A plugin for [puppeteer-extra](https://bit.ly/2JYg8Aa) to provide [puppeteer](https://bit.ly/2JX4gOZ) functionality with [Angular](https://bit.ly/2Yw8Mw6) synchronization support.
+A plugin for [puppeteer-extra](https://bit.ly/2JYg8Aa) to provide [puppeteer](https://bit.ly/2JX4gOZ) functionality with [Angular](https://bit.ly/2Yw8Mw6) synchronization support on Angular pages.
+It supports non-[Angular](https://bit.ly/2Yw8Mw6) pages starting on version 3.x.
 
 Installation
 -
