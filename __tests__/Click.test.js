@@ -18,110 +18,106 @@
 
 const Click = require('../lib/Click.js');
 
-const mock = {
-  $: jest.fn(() => mock.element),
-  $eval: jest.fn((selector, callback) => new Promise(async (resolve, reject) => {
-    if (this.action === 'error') {
-      reject(Error('error'));
-    } else {
-      resolve(callback(mock.element));
-    }
-  })),
-  debug: jest.spyOn(Click.__test__.logger, 'debug'),
-  element: {},
-  waitUntilActionReady: jest.fn(() => new Promise(resolve => setTimeout(resolve, 100))),
+const createMocks = ({
+  $Action = '',
+  evalAction = '',
+} = {}) => {
+  const mocks = Object.assign({
+    $Action,
+    evalAction,
+  }, {
+    $: jest.fn(() => (mocks.$Action === 'null' ? null : mocks.element)),
+    $eval: jest.fn((selector, callback) => new Promise(async (resolve, reject) => {
+      if (mocks.evalAction === 'error') {
+        reject(Error('error'));
+      } else {
+        resolve(callback(mocks.element));
+      }
+    })),
+    debug: jest.spyOn(Click.__test__.logger, 'debug'),
+    element: {
+      dispatchEvent: jest.fn(() => {}),
+    },
+    waitUntilActionReady: jest.fn(() => new Promise(resolve => setTimeout(resolve, 100))),
+  });
+  return mocks;
 };
+
+const evtInit = {
+  bubbles: true,
+  cancelable: true,
+};
+
+global.MouseEvent = jest.fn(() => {});
 
 describe('Click module test', () => {
   describe('ifExists', () => {
-    beforeAll(() => {
-      this.action = '';
-      this.context = [];
-      this.context.trigger = jest.fn(() => this.context);
-      global.angular = {
-        element: jest.fn(() => this.context),
-      };
-    });
-
-    afterAll(() => {
-      global.angular = null;
-      this.context = null;
-    });
-
     it('should return truthy', async () => {
-      this.action = '';
-      this.context.length = 1;
-      mock.element = {};
-      const actual = await Click.ifExists.call(mock, 'selector', 'label', 200);
+      const mocks = createMocks();
+      const actual = await Click.ifExists.call(mocks, 'selector', 'label', 200);
       expect(actual).toBeTruthy();
-      expect(mock.$).toHaveBeenCalledTimes(1);
-      expect(mock.$).toHaveBeenNthCalledWith(1, 'selector');
-      expect(mock.$eval).toHaveBeenCalledTimes(1);
-      expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function));
-      expect(mock.waitUntilActionReady).toHaveBeenCalledTimes(1);
-      expect(mock.waitUntilActionReady).toHaveBeenNthCalledWith(1, 200);
-      expect(mock.debug).toHaveBeenCalledTimes(1);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s for %s', 'selector', 'label');
-      expect(angular.element).toHaveBeenCalledTimes(1);
-      expect(angular.element).toHaveBeenNthCalledWith(1, mock.element);
-      expect(this.context.trigger).toHaveBeenCalledTimes(1);
-      expect(this.context.trigger).toHaveBeenNthCalledWith(1, 'click');
+      expect(mocks.$).toHaveBeenCalledTimes(1);
+      expect(mocks.$).toHaveBeenNthCalledWith(1, 'selector');
+      expect(mocks.$eval).toHaveBeenCalledTimes(1);
+      expect(mocks.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function));
+      expect(mocks.waitUntilActionReady).toHaveBeenCalledTimes(1);
+      expect(mocks.waitUntilActionReady).toHaveBeenNthCalledWith(1, 200);
+      expect(mocks.debug).toHaveBeenCalledTimes(1);
+      expect(mocks.debug).toHaveBeenNthCalledWith(1, '%s for %s', 'selector', 'label');
+      expect(mocks.element.dispatchEvent).toHaveBeenCalledTimes(1);
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(1, expect.any(global.MouseEvent));
+      expect(global.MouseEvent).toHaveBeenCalledTimes(1);
+      expect(global.MouseEvent).toHaveBeenNthCalledWith(1, 'click', evtInit);
     });
 
     it('should use default value and return truthy', async () => {
-      this.action = '';
-      this.context.length = 1;
-      mock.element = {};
-      const actual = await Click.ifExists.call(mock, 'selector');
+      const mocks = createMocks();
+      const actual = await Click.ifExists.call(mocks, 'selector');
       expect(actual).toBeTruthy();
-      expect(mock.$).toHaveBeenCalledTimes(1);
-      expect(mock.$).toHaveBeenNthCalledWith(1, 'selector');
-      expect(mock.$eval).toHaveBeenCalledTimes(1);
-      expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function));
-      expect(mock.waitUntilActionReady).toHaveBeenCalledTimes(1);
-      expect(mock.waitUntilActionReady).toHaveBeenNthCalledWith(1, 25000);
-      expect(mock.debug).toHaveBeenCalledTimes(1);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s for %s', 'selector', 'click');
-      expect(angular.element).toHaveBeenCalledTimes(1);
-      expect(angular.element).toHaveBeenNthCalledWith(1, mock.element);
-      expect(this.context.trigger).toHaveBeenCalledTimes(1);
-      expect(this.context.trigger).toHaveBeenNthCalledWith(1, 'click');
+      expect(mocks.$).toHaveBeenCalledTimes(1);
+      expect(mocks.$).toHaveBeenNthCalledWith(1, 'selector');
+      expect(mocks.$eval).toHaveBeenCalledTimes(1);
+      expect(mocks.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function));
+      expect(mocks.waitUntilActionReady).toHaveBeenCalledTimes(1);
+      expect(mocks.waitUntilActionReady).toHaveBeenNthCalledWith(1, 25000);
+      expect(mocks.debug).toHaveBeenCalledTimes(1);
+      expect(mocks.debug).toHaveBeenNthCalledWith(1, '%s for %s', 'selector', 'click');
+      expect(mocks.element.dispatchEvent).toHaveBeenCalledTimes(1);
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(1, expect.any(global.MouseEvent));
+      expect(global.MouseEvent).toHaveBeenCalledTimes(1);
+      expect(global.MouseEvent).toHaveBeenNthCalledWith(1, 'click', evtInit);
     });
 
     it('should return falsy', async () => {
-      this.action = '';
-      this.context.length = 0;
-      mock.element = null;
-      const actual = await Click.ifExists.call(mock, 'selector', 'label', 200);
+      const mocks = createMocks({ $Action: 'null' });
+      const actual = await Click.ifExists.call(mocks, 'selector', 'label', 200);
       expect(actual).toBeFalsy();
-      expect(mock.$).toHaveBeenCalledTimes(1);
-      expect(mock.$).toHaveBeenNthCalledWith(1, 'selector');
-      expect(mock.$eval).not.toHaveBeenCalled();
-      expect(mock.waitUntilActionReady).not.toHaveBeenCalled();
-      expect(mock.debug).toHaveBeenCalledTimes(1);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s for %s not found', 'selector', 'label');
-      expect(angular.element).not.toHaveBeenCalled();
-      expect(this.context.trigger).not.toHaveBeenCalled();
+      expect(mocks.$).toHaveBeenCalledTimes(1);
+      expect(mocks.$).toHaveBeenNthCalledWith(1, 'selector');
+      expect(mocks.$eval).not.toHaveBeenCalled();
+      expect(mocks.waitUntilActionReady).not.toHaveBeenCalled();
+      expect(mocks.debug).toHaveBeenCalledTimes(1);
+      expect(mocks.debug).toHaveBeenNthCalledWith(1, '%s for %s not found', 'selector', 'label');
+      expect(mocks.element.dispatchEvent).not.toHaveBeenCalled();
+      expect(global.MouseEvent).not.toHaveBeenCalled();
     });
 
     it('should log error', async () => {
-      this.action = 'error';
-      this.context.length = 1;
-      mock.element = {};
-      const actual = await Click.ifExists.call(mock, 'selector', 'label', 200);
+      const mocks = createMocks({ evalAction: 'error' });
+      const actual = await Click.ifExists.call(mocks, 'selector', 'label', 200);
       expect(actual).toBeFalsy();
-      expect(mock.$).toHaveBeenCalledTimes(1);
-      expect(mock.$).toHaveBeenNthCalledWith(1, 'selector');
-      expect(mock.$eval).toHaveBeenCalledTimes(1);
-      expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function));
-      expect(mock.waitUntilActionReady).toHaveBeenCalledTimes(1);
-      expect(mock.waitUntilActionReady).toHaveBeenNthCalledWith(1, 200);
-      expect(mock.debug).toHaveBeenCalledTimes(2);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s for %s error: %s',
+      expect(mocks.$).toHaveBeenCalledTimes(1);
+      expect(mocks.$).toHaveBeenNthCalledWith(1, 'selector');
+      expect(mocks.$eval).toHaveBeenCalledTimes(1);
+      expect(mocks.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function));
+      expect(mocks.waitUntilActionReady).toHaveBeenCalledTimes(1);
+      expect(mocks.waitUntilActionReady).toHaveBeenNthCalledWith(1, 200);
+      expect(mocks.debug).toHaveBeenCalledTimes(2);
+      expect(mocks.debug).toHaveBeenNthCalledWith(1, '%s for %s error: %s',
         'selector', 'label', expect.any(Error));
-      expect(mock.debug).toHaveBeenNthCalledWith(2, '%s for %s not found', 'selector', 'label');
-      expect(angular.element).not.toHaveBeenCalled();
-      expect(this.context.trigger).not.toHaveBeenCalled();
+      expect(mocks.debug).toHaveBeenNthCalledWith(2, '%s for %s not found', 'selector', 'label');
+      expect(mocks.element.dispatchEvent).not.toHaveBeenCalled();
+      expect(global.MouseEvent).not.toHaveBeenCalled();
     });
   });
 });
