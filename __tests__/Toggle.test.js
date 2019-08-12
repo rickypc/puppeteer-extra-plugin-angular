@@ -21,21 +21,24 @@ const Toggle = require('../lib/Toggle.js');
 const createMocks = ({
   evalAction = '',
 } = {}) => {
-  const mocks = Object.assign({
-    evalAction,
-  }, {
-    $eval: jest.fn((selector, callback, ...args) => new Promise(async (resolve, reject) => {
-      if (mocks.evalAction === 'error') {
-        reject(Error('error'));
-      } else {
-        resolve(callback(mocks.element, ...args));
-      }
-    })),
-    debug: jest.spyOn(Toggle.__test__.logger, 'debug'),
-    element: {
-      dispatchEvent: jest.fn(() => {}),
+  const mocks = {
+    ...{
+      evalAction,
     },
-  });
+    ...{
+      $eval: jest.fn((selector, callback, ...args) => new Promise((resolve, reject) => {
+        if (mocks.evalAction === 'error') {
+          reject(Error('error'));
+        } else {
+          resolve(callback(mocks.element, ...args));
+        }
+      })),
+      debug: jest.spyOn(Toggle.__test__.logger, 'debug'),
+      element: {
+        dispatchEvent: jest.fn(() => {}),
+      },
+    },
+  };
   return mocks;
 };
 
