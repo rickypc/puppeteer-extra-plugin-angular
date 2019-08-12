@@ -18,17 +18,33 @@
 
 const Toggle = require('../lib/Toggle.js');
 
-const mock = {
-  $eval: jest.fn((selector, callback, ...args) => new Promise(async (resolve, reject) => {
-    if (this.action === 'error') {
-      reject(Error('error'));
-    } else {
-      resolve(callback(mock.element, ...args));
-    }
-  })),
-  debug: jest.spyOn(Toggle.__test__.logger, 'debug'),
-  element: {},
+const createMocks = ({
+  evalAction = '',
+} = {}) => {
+  const mocks = Object.assign({
+    evalAction,
+  }, {
+    $eval: jest.fn((selector, callback, ...args) => new Promise(async (resolve, reject) => {
+      if (mocks.evalAction === 'error') {
+        reject(Error('error'));
+      } else {
+        resolve(callback(mocks.element, ...args));
+      }
+    })),
+    debug: jest.spyOn(Toggle.__test__.logger, 'debug'),
+    element: {
+      dispatchEvent: jest.fn(() => {}),
+    },
+  });
+  return mocks;
 };
+
+const evtInit = {
+  bubbles: true,
+  cancelable: true,
+};
+
+global.Event = jest.fn(() => {});
 
 describe('Toggle module test', () => {
   describe('check', () => {
@@ -132,186 +148,143 @@ describe('Toggle module test', () => {
   });
 
   describe('toggleCheckbox', () => {
-    beforeAll(() => {
-      this.action = '';
-      this.context = [];
-      this.context.prop = jest.fn(() => this.context);
-      this.context.trigger = jest.fn(() => this.context);
-      global.angular = {
-        element: jest.fn(() => this.context),
-      };
-    });
-
-    afterAll(() => {
-      global.angular = null;
-      this.context = null;
-    });
-
     it('should return truthy', async () => {
-      this.action = '';
-      this.context.length = 1;
-      const actual = await Toggle.__test__.toggleCheckbox(mock, 'selector', 'label', true);
+      const mocks = createMocks();
+      const actual = await Toggle.__test__.toggleCheckbox(mocks, 'selector', 'label', true);
       expect(actual).toBeTruthy();
-      expect(mock.$eval).toHaveBeenCalledTimes(1);
-      expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function), true);
-      expect(mock.debug).toHaveBeenCalledTimes(1);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s is %schecked for %s',
+      expect(mocks.$eval).toHaveBeenCalledTimes(1);
+      expect(mocks.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function), true);
+      expect(mocks.debug).toHaveBeenCalledTimes(1);
+      expect(mocks.debug).toHaveBeenNthCalledWith(1, '%s is %schecked for %s',
         'selector', '', 'label');
-      expect(angular.element).toHaveBeenCalledTimes(1);
-      expect(angular.element).toHaveBeenNthCalledWith(1, mock.element);
-      expect(this.context.prop).toHaveBeenCalledTimes(1);
-      expect(this.context.prop).toHaveBeenNthCalledWith(1, 'checked', true);
-      expect(this.context.trigger).toHaveBeenCalledTimes(2);
-      expect(this.context.trigger).toHaveBeenNthCalledWith(1, 'change');
-      expect(this.context.trigger).toHaveBeenNthCalledWith(2, 'focusout');
+      expect(mocks.element.checked).toBeTruthy();
+      expect(mocks.element.dispatchEvent).toHaveBeenCalledTimes(3);
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(1, expect.any(global.Event));
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(2, expect.any(global.Event));
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(3, expect.any(global.Event));
+      expect(global.Event).toHaveBeenCalledTimes(3);
+      expect(global.Event).toHaveBeenNthCalledWith(1, 'focus', evtInit);
+      expect(global.Event).toHaveBeenNthCalledWith(2, 'change', evtInit);
+      expect(global.Event).toHaveBeenNthCalledWith(3, 'blur', evtInit);
     });
 
     it('should use default value and return truthy', async () => {
-      this.action = '';
-      this.context.length = 1;
-      const actual = await Toggle.__test__.toggleCheckbox(mock, 'selector');
+      const mocks = createMocks();
+      const actual = await Toggle.__test__.toggleCheckbox(mocks, 'selector');
       expect(actual).toBeTruthy();
-      expect(mock.$eval).toHaveBeenCalledTimes(1);
-      expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function), false);
-      expect(mock.debug).toHaveBeenCalledTimes(1);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s is %schecked for %s',
+      expect(mocks.$eval).toHaveBeenCalledTimes(1);
+      expect(mocks.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function), false);
+      expect(mocks.debug).toHaveBeenCalledTimes(1);
+      expect(mocks.debug).toHaveBeenNthCalledWith(1, '%s is %schecked for %s',
         'selector', 'un', 'toggle');
-      expect(angular.element).toHaveBeenCalledTimes(1);
-      expect(angular.element).toHaveBeenNthCalledWith(1, mock.element);
-      expect(this.context.prop).toHaveBeenCalledTimes(1);
-      expect(this.context.prop).toHaveBeenNthCalledWith(1, 'checked', false);
-      expect(this.context.trigger).toHaveBeenCalledTimes(2);
-      expect(this.context.trigger).toHaveBeenNthCalledWith(1, 'change');
-      expect(this.context.trigger).toHaveBeenNthCalledWith(2, 'focusout');
-    });
-
-    it('should return falsy', async () => {
-      this.action = '';
-      this.context.length = 0;
-      const actual = await Toggle.__test__.toggleCheckbox(mock, 'selector', 'label', true);
-      expect(actual).toBeFalsy();
-      expect(mock.$eval).toHaveBeenCalledTimes(1);
-      expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function), true);
-      expect(mock.debug).toHaveBeenCalledTimes(1);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s for %s not found', 'selector', 'label');
-      expect(angular.element).toHaveBeenCalledTimes(1);
-      expect(angular.element).toHaveBeenNthCalledWith(1, mock.element);
-      expect(this.context.prop).toHaveBeenCalledTimes(1);
-      expect(this.context.prop).toHaveBeenNthCalledWith(1, 'checked', true);
-      expect(this.context.trigger).toHaveBeenCalledTimes(2);
-      expect(this.context.trigger).toHaveBeenNthCalledWith(1, 'change');
-      expect(this.context.trigger).toHaveBeenNthCalledWith(2, 'focusout');
+      expect(mocks.element.checked).toBeFalsy();
+      expect(mocks.element.dispatchEvent).toHaveBeenCalledTimes(3);
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(1, expect.any(global.Event));
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(2, expect.any(global.Event));
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(3, expect.any(global.Event));
+      expect(global.Event).toHaveBeenCalledTimes(3);
+      expect(global.Event).toHaveBeenNthCalledWith(1, 'focus', evtInit);
+      expect(global.Event).toHaveBeenNthCalledWith(2, 'change', evtInit);
+      expect(global.Event).toHaveBeenNthCalledWith(3, 'blur', evtInit);
     });
 
     it('should log error', async () => {
-      this.action = 'error';
-      this.context.length = 1;
-      const actual = await Toggle.__test__.toggleCheckbox(mock, 'selector', 'label', true);
+      const mocks = createMocks({ evalAction: 'error' });
+      const actual = await Toggle.__test__.toggleCheckbox(mocks, 'selector', 'label', true);
       expect(actual).toBeFalsy();
-      expect(mock.$eval).toHaveBeenCalledTimes(1);
-      expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function), true);
-      expect(mock.debug).toHaveBeenCalledTimes(2);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, 'toggle.checkbox %s for %s error: %s',
+      expect(mocks.$eval).toHaveBeenCalledTimes(1);
+      expect(mocks.$eval).toHaveBeenNthCalledWith(1, 'selector', expect.any(Function), true);
+      expect(mocks.debug).toHaveBeenCalledTimes(2);
+      expect(mocks.debug).toHaveBeenNthCalledWith(1, 'toggle.checkbox %s for %s error: %s',
         'selector', 'label', expect.any(Error));
-      expect(mock.debug).toHaveBeenNthCalledWith(2, '%s for %s not found', 'selector', 'label');
-      expect(angular.element).not.toHaveBeenCalled();
-      expect(this.context.prop).not.toHaveBeenCalled();
-      expect(this.context.trigger).not.toHaveBeenCalled();
+      expect(mocks.debug).toHaveBeenNthCalledWith(2, '%s for %s not found', 'selector', 'label');
+      expect(mocks.element.checked).toBeFalsy();
+      expect(mocks.element.dispatchEvent).not.toHaveBeenCalled();
+      expect(global.Event).not.toHaveBeenCalled();
     });
   });
 
   describe('toggleSelectByText', () => {
-    beforeAll(() => {
-      this.action = '';
-      this.context = [];
-      this.context.trigger = jest.fn(() => this.context);
-      global.angular = {
-        element: jest.fn(() => this.context),
-      };
-    });
-
-    afterAll(() => {
-      global.angular = null;
-      this.context = null;
-    });
-
     it('should return truthy', async () => {
-      this.action = '';
-      this.context.length = 1;
-      mock.element = {
-        options: [
-          { text: 'value' },
-          { text: 'value2' },
-        ],
-      };
-      const actual = await Toggle.__test__.toggleSelectByText(mock,
+      const mocks = createMocks();
+      mocks.element.options = [
+        { text: 'value' },
+        { text: 'value2' },
+      ];
+      const actual = await Toggle.__test__.toggleSelectByText(mocks,
         'selector', ['value'], 'label', true);
       expect(actual).toBeTruthy();
-      expect(mock.$eval).toHaveBeenCalledTimes(1);
-      expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector',
+      expect(mocks.$eval).toHaveBeenCalledTimes(1);
+      expect(mocks.$eval).toHaveBeenNthCalledWith(1, 'selector',
         expect.any(Function), ['value'], true);
-      expect(mock.debug).toHaveBeenCalledTimes(1);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s to %sselected on %s for %s',
+      expect(mocks.debug).toHaveBeenCalledTimes(1);
+      expect(mocks.debug).toHaveBeenNthCalledWith(1, '%s to %sselected on %s for %s',
         'value', '', 'selector', 'label');
-      expect(angular.element).toHaveBeenCalledTimes(1);
-      expect(angular.element).toHaveBeenNthCalledWith(1, mock.element);
-      expect(this.context.trigger).toHaveBeenCalledTimes(2);
-      expect(this.context.trigger).toHaveBeenNthCalledWith(1, 'change');
-      expect(this.context.trigger).toHaveBeenNthCalledWith(2, 'focusout');
+      expect(mocks.element.options[0].selected).toBeTruthy();
+      expect(mocks.element.options[1].selected).toBeFalsy();
+      expect(mocks.element.dispatchEvent).toHaveBeenCalledTimes(3);
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(1, expect.any(global.Event));
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(2, expect.any(global.Event));
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(3, expect.any(global.Event));
+      expect(global.Event).toHaveBeenCalledTimes(3);
+      expect(global.Event).toHaveBeenNthCalledWith(1, 'focus', evtInit);
+      expect(global.Event).toHaveBeenNthCalledWith(2, 'change', evtInit);
+      expect(global.Event).toHaveBeenNthCalledWith(3, 'blur', evtInit);
     });
 
     it('should use default value and return truthy', async () => {
-      this.action = '';
-      this.context.length = 1;
-      mock.element = null;
-      const actual = await Toggle.__test__.toggleSelectByText(mock, 'selector');
+      const mocks = createMocks();
+      const actual = await Toggle.__test__.toggleSelectByText(mocks, 'selector');
       expect(actual).toBeTruthy();
-      expect(mock.$eval).toHaveBeenCalledTimes(1);
-      expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector',
+      expect(mocks.$eval).toHaveBeenCalledTimes(1);
+      expect(mocks.$eval).toHaveBeenNthCalledWith(1, 'selector',
         expect.any(Function), [], false);
-      expect(mock.debug).toHaveBeenCalledTimes(1);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s to %sselected on %s for %s',
+      expect(mocks.debug).toHaveBeenCalledTimes(1);
+      expect(mocks.debug).toHaveBeenNthCalledWith(1, '%s to %sselected on %s for %s',
         '', 'de', 'selector', 'toggle');
-      expect(angular.element).toHaveBeenCalledTimes(1);
-      expect(angular.element).toHaveBeenNthCalledWith(1, mock.element);
-      expect(this.context.trigger).toHaveBeenCalledTimes(2);
-      expect(this.context.trigger).toHaveBeenNthCalledWith(1, 'change');
-      expect(this.context.trigger).toHaveBeenNthCalledWith(2, 'focusout');
+      expect(mocks.element.dispatchEvent).toHaveBeenCalledTimes(3);
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(1, expect.any(global.Event));
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(2, expect.any(global.Event));
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(3, expect.any(global.Event));
+      expect(global.Event).toHaveBeenCalledTimes(3);
+      expect(global.Event).toHaveBeenNthCalledWith(1, 'focus', evtInit);
+      expect(global.Event).toHaveBeenNthCalledWith(2, 'change', evtInit);
+      expect(global.Event).toHaveBeenNthCalledWith(3, 'blur', evtInit);
     });
 
-    it('should return falsy', async () => {
-      this.action = '';
-      this.context.length = 0;
-      mock.element = null;
-      const actual = await Toggle.__test__.toggleSelectByText(mock, 'selector', 'value');
-      expect(actual).toBeFalsy();
-      expect(mock.$eval).toHaveBeenCalledTimes(1);
-      expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector',
+    it('should use given non-array value and return truthy', async () => {
+      const mocks = createMocks();
+      const actual = await Toggle.__test__.toggleSelectByText(mocks, 'selector', 'value');
+      expect(actual).toBeTruthy();
+      expect(mocks.$eval).toHaveBeenCalledTimes(1);
+      expect(mocks.$eval).toHaveBeenNthCalledWith(1, 'selector',
         expect.any(Function), ['value'], false);
-      expect(mock.debug).toHaveBeenCalledTimes(1);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, '%s for %s not found', 'selector', 'toggle');
-      expect(angular.element).toHaveBeenCalledTimes(1);
-      expect(angular.element).toHaveBeenNthCalledWith(1, mock.element);
-      expect(this.context.trigger).toHaveBeenCalledTimes(2);
-      expect(this.context.trigger).toHaveBeenNthCalledWith(1, 'change');
-      expect(this.context.trigger).toHaveBeenNthCalledWith(2, 'focusout');
+      expect(mocks.debug).toHaveBeenCalledTimes(1);
+      expect(mocks.debug).toHaveBeenNthCalledWith(1, '%s to %sselected on %s for %s', 'value',
+        'de', 'selector', 'toggle');
+      expect(mocks.element.dispatchEvent).toHaveBeenCalledTimes(3);
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(1, expect.any(global.Event));
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(2, expect.any(global.Event));
+      expect(mocks.element.dispatchEvent).toHaveBeenNthCalledWith(3, expect.any(global.Event));
+      expect(global.Event).toHaveBeenCalledTimes(3);
+      expect(global.Event).toHaveBeenNthCalledWith(1, 'focus', evtInit);
+      expect(global.Event).toHaveBeenNthCalledWith(2, 'change', evtInit);
+      expect(global.Event).toHaveBeenNthCalledWith(3, 'blur', evtInit);
     });
 
     it('should log error', async () => {
-      this.action = 'error';
-      this.context.length = 1;
-      mock.element = null;
-      const actual = await Toggle.__test__.toggleSelectByText(mock, 'selector', 'value');
+      const mocks = createMocks({ evalAction: 'error' });
+      const actual = await Toggle.__test__.toggleSelectByText(mocks, 'selector', 'value');
       expect(actual).toBeFalsy();
-      expect(mock.$eval).toHaveBeenCalledTimes(1);
-      expect(mock.$eval).toHaveBeenNthCalledWith(1, 'selector',
+      expect(mocks.$eval).toHaveBeenCalledTimes(1);
+      expect(mocks.$eval).toHaveBeenNthCalledWith(1, 'selector',
         expect.any(Function), ['value'], false);
-      expect(mock.debug).toHaveBeenCalledTimes(2);
-      expect(mock.debug).toHaveBeenNthCalledWith(1, 'toggle.select %s for %s error: %s',
+      expect(mocks.debug).toHaveBeenCalledTimes(2);
+      expect(mocks.debug).toHaveBeenNthCalledWith(1, 'toggle.select %s for %s error: %s',
         'selector', 'toggle', expect.any(Error));
-      expect(mock.debug).toHaveBeenNthCalledWith(2, '%s for %s not found', 'selector', 'toggle');
-      expect(angular.element).not.toHaveBeenCalled();
-      expect(this.context.trigger).not.toHaveBeenCalled();
+      expect(mocks.debug).toHaveBeenNthCalledWith(2, '%s for %s not found', 'selector', 'toggle');
+      expect(mocks.element.dispatchEvent).not.toHaveBeenCalled();
+      expect(global.Event).not.toHaveBeenCalled();
     });
   });
 });
