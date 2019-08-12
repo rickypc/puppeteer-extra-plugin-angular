@@ -4,7 +4,7 @@
     "debug": "^4.1.1",
     "jmespath": "^0.15.0",
     "puppeteer-extra-plugin": "^3.0.4",
-    "timeable-promise": "^1.2.1"
+    "timeable-promise": "^1.2.2"
   },
   "description": "A plugin for puppeteer-extra to provide puppeteer functionality with Angular synchronization support.",
   "devDependencies": {
