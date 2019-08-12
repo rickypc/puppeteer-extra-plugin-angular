@@ -28,6 +28,8 @@ module.exports = {
   globals: {
     angular: true,
     document: true,
+    Event: true,
+    MouseEvent: true,
     window: true,
   },
   plugins: [
