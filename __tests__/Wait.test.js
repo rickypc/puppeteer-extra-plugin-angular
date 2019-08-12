@@ -27,14 +27,14 @@ const mock = {
     mock.data[topic] = setTimeout(callback,
       Math.floor(Math.random() * (25 - 10 + 1) + 10), { _targetId: 'target' });
   }),
-  browserRemoveListener: jest.fn(topic => clearTimeout(mock.data[topic])),
+  browserRemoveListener: jest.fn((topic) => clearTimeout(mock.data[topic])),
   data: {},
   debug: jest.spyOn(Wait.__test__.logger, 'debug'),
-  evaluate: jest.fn((callback, timeout) => new Promise(async (resolve, reject) => {
+  evaluate: jest.fn((callback, timeout) => new Promise((resolve, reject) => {
     if (this.evaluateAction === 'error') {
       reject(Error('error'));
     } else {
-      resolve(await callback(timeout > 100 ? 100 : timeout));
+      callback(timeout > 100 ? 100 : timeout).then(resolve);
     }
   })),
   settledOrTimedout: jest.spyOn(Wait.__test__, 'untilSettledOrTimedOut')
