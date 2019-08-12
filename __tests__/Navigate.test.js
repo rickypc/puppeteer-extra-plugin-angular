@@ -27,7 +27,7 @@ const mock = {
       resolve();
     }
   })),
-  waitUntilActionReady: jest.fn(() => new Promise(resolve => setTimeout(resolve, 100))),
+  waitUntilActionReady: jest.fn(() => new Promise((resolve) => setTimeout(resolve, 100))),
 };
 
 describe('Navigate module test', () => {
