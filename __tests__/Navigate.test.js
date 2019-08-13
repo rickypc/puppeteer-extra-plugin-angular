@@ -67,7 +67,8 @@ describe('Navigate module test', () => {
       await Navigate.untilReady.call(mock, 'url', 200);
       expect(mock.goto).toHaveBeenCalledTimes(1);
       expect(mock.goto).toHaveBeenNthCalledWith(1, 'url', { timeout: 0 });
-      expect(mock.waitUntilActionReady).not.toHaveBeenCalled();
+      expect(mock.waitUntilActionReady).toHaveBeenCalledTimes(1);
+      expect(mock.waitUntilActionReady).toHaveBeenNthCalledWith(1, 200);
       expect(mock.debug).toHaveBeenNthCalledWith(1, '%s error: %s', 'url', expect.any(Error));
     });
   });
