@@ -1,3 +1,7 @@
+### 3.2.0 (2019.08.12)
+
+* Update the navigate approach
+
 ### 3.1.0 (2019.08.11)
 
 * Update (another) dependency and follow linter suggestions
