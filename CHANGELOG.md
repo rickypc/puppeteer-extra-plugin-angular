@@ -1,3 +1,7 @@
+### 3.2.1 (2020.03.07)
+
+* Update readme and contributing section
+
 ### 3.2.0 (2019.08.12)
 
 * Update the navigate approach
