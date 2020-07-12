@@ -1,3 +1,7 @@
+### 3.2.2 (2020.07.12)
+
+* Update dependencies
+
 ### 3.2.1 (2020.03.07)
 
 * Update readme and contributing section
