@@ -1,6 +1,6 @@
 /*!
  *  Logger.test.js - tests for Logger functionality.
- *  Copyright (c) 2018 - 2019 Richard Huang <rickypc@users.noreply.github.com>
+ *  Copyright (c) 2018 - 2021 Richard Huang <rickypc@users.noreply.github.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as
@@ -34,10 +34,8 @@ describe('Logger module test', () => {
   describe('destroy', () => {
     it('should destroy member variables', () => {
       const actual = new Logger('namespace');
-      const mockDestroy = jest.spyOn(actual.debugNamespace, 'destroy');
       actual.destroy();
       expect(actual.debugNamespace).toBeNull();
-      expect(mockDestroy).toHaveBeenCalledTimes(1);
     });
   });
 
