@@ -4,21 +4,21 @@
     "name": "Richard Huang"
   },
   "dependencies": {
-    "debug": "^4.1.1",
+    "debug": "^4.3.1",
     "jmespath": "^0.15.0",
-    "puppeteer-extra-plugin": "^3.1.6",
-    "timeable-promise": "^1.2.6"
+    "puppeteer-extra-plugin": "^3.1.8",
+    "timeable-promise": "^1.2.8"
   },
   "description": "A plugin for puppeteer-extra to provide puppeteer functionality with Angular synchronization support.",
   "devDependencies": {
-    "eslint": "^7.4.0",
-    "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-jest": "^23.18.0",
-    "jest": "^26.1.0",
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.1.5",
+    "jest": "^26.6.3",
     "jsdoc-to-markdown": "^6.0.1",
-    "puppeteer": "^5.0.0",
-    "puppeteer-extra": "^3.1.12"
+    "puppeteer": "^7.1.0",
+    "puppeteer-extra": "^3.1.17"
   },
   "engines": {
     "node": ">=10.0.0"
@@ -65,5 +65,5 @@
     "lint": "eslint lib/** __tests__/** index.js; exit 0",
     "test": "jest"
   },
-  "version": "3.2.3"
+  "version": "3.2.4"
 }
