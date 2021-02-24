@@ -60,7 +60,7 @@ puppeteer.use(require('puppeteer-extra-plugin-angular')());
     theEmail: 'you@address.com',
   };
 
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({});
   const page = await browser.newPage();
 
   // Calling page.waitUntilActionReady internally.
